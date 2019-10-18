@@ -7,17 +7,32 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Version\Version;
+use App\Controller\PolicyTargets;
 
 /**
  * @ApiResource(
  *      collectionOperations={
  *          "post",
- *          "get"
+ *          "get",
+ *          "get_policy_targets"={
+ *              "method"="GET",
+ *              "path"="/policies/{id}/targets",
+ *              "controller"=PolicyTargets::class,
+ *              "_api_swagger_context"={
+ *                  "summary"="Get the targeted users of a policy.",
+ *                  "parameters"={},
+ *                  "responses"={
+ *                      "200"={
+ *                          "schema"={
+ *                              "properties"={}
+ *                          }
+ *                      }
+ *                  }
+ *              }
+ *          }
  *      },
  *      itemOperations={
  *          "get",
- *          "get_policy_users"={"method"="get", "route_name"="get_policy_targets"},
  *          "policy_new_version"={"method"="post", "route_name"="policy_new_version"}
  *      }
  * 

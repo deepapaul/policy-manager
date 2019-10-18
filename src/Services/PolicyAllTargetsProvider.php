@@ -7,9 +7,9 @@ class PolicyAllTargetsProvider implements PolicyTargetProviderInterface
 {
     public function getTargets()
     {
-
+        return 'test --- PolicyAllTargetsProvider';
     }
     public function resolves(){
-        
+        return false;
     }
 }

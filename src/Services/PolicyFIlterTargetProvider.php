@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Controller;
+namespace App\Services;
 
 use App\Services\PolicyTargetProviderInterface;
 
-class PolicyFIlterTargetProvider implements PolicyTargetProviderInterface
+class PolicyFilterTargetProvider implements PolicyTargetProviderInterface
 {
     public function getTargets()
     {
-
+        return ['username'=>'test'];
     }
     public function resolves(){
-        
+        return true;
     }
 }

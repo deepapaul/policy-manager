@@ -2,12 +2,10 @@
 
 namespace App\Services;
 use App\Entity\Policy;
+use App\Services\PolicyTargetProviderInterface;
 
 class PolicyTargetProviderResolver
 {
-    /**
-     * @var TargetsIdentifiersProviderInterface[]
-     */
     private $providers;
 
     public function __construct(PolicyTargetProviderInterface ...$providers){
@@ -16,7 +14,8 @@ class PolicyTargetProviderResolver
     }
     public function resolve(Policy $policy): PolicyTargetProviderInterface
     {
-        foreach($providers as $provider){
+        dump($this->providers);exit;
+        foreach($this->providers as $provider){
             if($provider->resolves($policy)){
                 return $provider;
             }
