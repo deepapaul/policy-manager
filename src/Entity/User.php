@@ -12,6 +12,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity("email") * 
+ * 
+ * @ORM\Table(
+ *    name="user", 
+ *    uniqueConstraints={
+ *        @ORM\UniqueConstraint(name="unique_email", columns={"email"})
+ *    }
+ * )
  */
 class User
 {
@@ -28,7 +36,7 @@ class User
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=100, unique=true)
      */
     private $firstName;
 
@@ -50,7 +58,7 @@ class User
     private $job;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PolicyUsers", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\PolicyUsers", mappedBy="user")
      */
     private $policyUsers;
 

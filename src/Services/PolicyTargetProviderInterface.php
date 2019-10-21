@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Services;
+use App\Entity\Policy;
 
 interface PolicyTargetProviderInterface
 {
-    public function getTargets();
-    public function resolves();
+    public function getTargets(Policy $policy);
+    public function supports(Policy $policy);
 }

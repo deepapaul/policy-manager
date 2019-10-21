@@ -33,7 +33,7 @@ use App\Controller\PolicyTargets;
  *      },
  *      itemOperations={
  *          "get",
- *          "policy_new_version"={"method"="post", "route_name"="policy_new_version"}
+ *          "policy_new_version"={"method"="POST", "route_name"="policy_new_version"},
  *      }
  * 
  * )
@@ -77,7 +77,7 @@ class Policy
     private $content;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $publishedAt;
 
@@ -86,9 +86,20 @@ class Policy
      */
     private $policyUsers;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isToAllUsers;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PolicyFilter", mappedBy="policy")
+     */
+    private $policyFilters;
+
     public function __construct()
     {
         $this->policyUsers = new ArrayCollection();
+        $this->policyFilters = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -144,6 +155,18 @@ class Policy
         return $this;
     }
 
+    public function getIsToAllUsers(): ?bool
+    {
+        return $this->isToAllUsers;
+    }
+
+    public function setIsToAllUsers(bool $isToAllUsers): self
+    {
+        $this->isToAllUsers = $isToAllUsers;
+
+        return $this;
+    }
+
     /**
      * @return Collection|PolicyUsers[]
      */
@@ -152,32 +175,41 @@ class Policy
         return $this->policyUsers;
     }
 
-    public function addPolicyUser(PolicyUsers $policyUser): self
-    {
-        if (!$this->policyUsers->contains($policyUser)) {
-            $this->policyUsers[] = $policyUser;
-            $policyUser->setPolicy($this);
-        }
-
-        return $this;
-    }
-
-    public function removePolicyUser(PolicyUsers $policyUser): self
-    {
-        if ($this->policyUsers->contains($policyUser)) {
-            $this->policyUsers->removeElement($policyUser);
-            // set the owning side to null (unless already changed)
-            if ($policyUser->getPolicy() === $this) {
-                $policyUser->setPolicy(null);
-            }
-        }
-
-        return $this;
-    }
     public function __clone()
     {
         list($major, $minor) = explode('.', $this->getVersion());
         $newVersion = sprintf("%d.%d", $major, ++$minor);
         $this->setVersion($newVersion);
+    }
+
+    /**
+     * @return Collection|PolicyFilter[]
+     */
+    public function getPolicyFilters(): Collection
+    {
+        return $this->policyFilters;
+    }
+
+    public function addPolicyFilter(PolicyFilter $policyFilter): self
+    {
+        if (!$this->policyFilters->contains($policyFilter)) {
+            $this->policyFilters[] = $policyFilter;
+            $policyFilter->setPolicy($this);
+        }
+
+        return $this;
+    }
+
+    public function removePolicyFilter(PolicyFilter $policyFilter): self
+    {
+        if ($this->policyFilters->contains($policyFilter)) {
+            $this->policyFilters->removeElement($policyFilter);
+            // set the owning side to null (unless already changed)
+            if ($policyFilter->getPolicy() === $this) {
+                $policyFilter->setPolicy(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -11,7 +11,7 @@ class PolicyNewVersion extends AbstractController
 {
     /**
      * @Route(
-     *  path="/api/policy/{id}/version", 
+     *  path="/api/policy/{id}/new-version", 
      *  name="policy_new_version",
      *  methods={"POST"},
      *  defaults={

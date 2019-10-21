@@ -3,8 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\PolicyUsers;
+use App\Entity\Policy;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use App\Repository\UserRepository;
+use App\Repository\PolicyRepository;
 
 /**
  * @method PolicyUsers|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,37 +18,45 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class PolicyUsersRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $userRepository;
+
+    private $policyRepository;
+
+    public function __construct(ManagerRegistry $registry, UserRepository $userRepository, PolicyRepository $policyRepository)
     {
         parent::__construct($registry, PolicyUsers::class);
+        $this->userRepository = $userRepository;
+        $this->policyRepository = $policyRepository;
     }
 
-    // /**
-    //  * @return PolicyUsers[] Returns an array of PolicyUsers objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+    public function distributeToUsersByPolicy(Policy $policy, array $userIds){
+        $em = $this->getEntityManager();
+        foreach($userIds as $userId){
+            $user = $this->userRepository->findOneById($userId);
+            if(!$user){
+                continue;
+            }
+            $this->setPolicyUser($policy, $user);   
+        }
+        $this->getEntityManager()->flush();
     }
-    */
+    
+    public function distributePoliciesForAUser(User $user, $policyIds){
+        $em = $this->getEntityManager();
+        foreach($policyIds as $policyId){
+            $policy = $this->policyRepository->findOneById($policyId);
+            if(!$user){
+                continue;
+            }
+            $this->setPolicyUser($policy, $user);
+        }
+        $this->getEntityManager()->flush();
+    }
 
-    /*
-    public function findOneBySomeField($value): ?PolicyUsers
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+    private function setPolicyUser($policy, $user){
+        $policyUser = new PolicyUsers();
+        $policyUser->setPolicy($policy);
+        $policyUser->setUser($user);
+        $this->getEntityManager()->persist($policyUser);
     }
-    */
 }

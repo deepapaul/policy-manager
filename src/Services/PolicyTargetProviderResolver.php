@@ -8,15 +8,14 @@ class PolicyTargetProviderResolver
 {
     private $providers;
 
-    public function __construct(PolicyTargetProviderInterface ...$providers){
+    public function __construct(iterable $providers){
         $this->providers = $providers;
 
     }
     public function resolve(Policy $policy): PolicyTargetProviderInterface
     {
-        dump($this->providers);exit;
         foreach($this->providers as $provider){
-            if($provider->resolves($policy)){
+            if($provider->supports($policy)){
                 return $provider;
             }
         }

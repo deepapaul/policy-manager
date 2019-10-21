@@ -21,6 +21,6 @@ class PolicyTargets extends AbstractController
     public function __invoke(Policy $policy)
     {
         $provider = $this->providerResolver->resolve($policy);
-
+        return $provider->getTargets($policy);
     }
 }

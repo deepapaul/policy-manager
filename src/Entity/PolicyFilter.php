@@ -19,57 +19,58 @@ class PolicyFilter
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Job")
+     */
+    private $job;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Department")
+     */
+    private $department;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Policy", inversedBy="policyFilters")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $policy;
-
-    /**
-     * @ORM\Column(type="json_array")
-     */
-    private $filter = [];
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $allUsers;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getPolicy(): ?int
+    public function getJob(): ?Job
+    {
+        return $this->job;
+    }
+
+    public function setJob(?Job $job): self
+    {
+        $this->job = $job;
+
+        return $this;
+    }
+
+    public function getDepartment(): ?Department
+    {
+        return $this->department;
+    }
+
+    public function setDepartment(?Department $department): self
+    {
+        $this->department = $department;
+
+        return $this;
+    }
+
+    public function getPolicy(): ?Policy
     {
         return $this->policy;
     }
 
-    public function setPolicy(int $policy): self
+    public function setPolicy(?Policy $policy): self
     {
         $this->policy = $policy;
-
-        return $this;
-    }
-
-    public function getFilter(): ?array
-    {
-        return $this->filter;
-    }
-
-    public function setFilter(array $filter): self
-    {
-        $this->filter = $filter;
-
-        return $this;
-    }
-
-    public function getAllUsers(): ?bool
-    {
-        return $this->allUsers;
-    }
-
-    public function setAllUsers(bool $allUsers): self
-    {
-        $this->allUsers = $allUsers;
 
         return $this;
     }

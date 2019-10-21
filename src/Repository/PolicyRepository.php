@@ -19,32 +19,18 @@ class PolicyRepository extends ServiceEntityRepository
         parent::__construct($registry, Policy::class);
     }
 
-    // /**
-    //  * @return Policy[] Returns an array of Policy objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function filterPolicies($jobId, $departmentId)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $queryBuilder = $this->createQueryBuilder('p')
+            ->select('p.id')
+            ->leftJoin('p.PolicyFilter pf')
+            ->where('p.isToAllUsers = :isToAllUsers')
+            
+            ->orWhere('pf.department = :departmentId AND pf.job IS NULL')
+            ->orWhere('pf.department IS NULL AND pf.job = :jobId')
+            ->orWhere('pf.department = :departmentId AND pf.job = :jobId')
+            ->setParameters(['isToAllUsers' => true, 'departmentId' => $departmentId, 'jobId' => $jobId]);
+        return array_column($queryBuilder->getQuery->getArrayResult(), 'id');
 
-    /*
-    public function findOneBySomeField($value): ?Policy
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
     }
-    */
 }
